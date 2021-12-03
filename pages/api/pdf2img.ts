@@ -10,7 +10,7 @@ import * as path from "path";
 // middleware that process files uploaded in multipart/form-data format.
 const upload = multer({
   storage: multer.diskStorage({
-    destination: './public/uploads',
+    destination: path.join(process.cwd(), './public/uploads'),
     filename: (req, file, cb) => cb(null, file.originalname),
   }),
 });
@@ -30,6 +30,16 @@ apiRoute.use(uploadMiddleware);
 
 // Process a POST request
 apiRoute.post(async (req, res) => {
+
+  const fileExist = fs.existsSync( path.join(
+    process.cwd(),
+    'public/uploads/' + (req as any).files[0].path)
+  );
+
+  return res.json({
+    status: fileExist ? 'exist' : 'not_exist'
+  });
+
   const data = await pdf2png(fs.readFileSync(
     path.join(
       process.cwd(),
