@@ -21,7 +21,7 @@ export async function* pdf2png(url: ObjectURL) {
     canvasNode.setAttribute('width', viewport.width);
     canvasNode.setAttribute('height', viewport.height);
 
-    var render_context = {
+    const render_context = {
       canvasContext: (document.querySelector("#pdf-canvas") as any).getContext("2d"),
       viewport: viewport
     };
