@@ -10,6 +10,7 @@ export async function* pdf2png(url: ObjectURL) {
 
   const canvasNode = document.createElement("canvas");
   canvasNode.setAttribute('id', 'pdf-canvas');
+  canvasNode.setAttribute('style', 'display:none');
 
   document.body.appendChild(canvasNode);
 
