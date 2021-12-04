@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Head from "next/head";
-import {pdf2png} from "../src/pdf2canvas";
+import {pdf2png} from "../convert/pdf2canvas";
 
 
 export interface IProps {
