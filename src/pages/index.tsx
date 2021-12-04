@@ -3,14 +3,7 @@ import Head from "next/head";
 import {pdf2png} from "../convert/pdf2canvas";
 
 
-export interface IProps {
-  acceptedFileTypes?: string;
-  allowMultipleFiles?: boolean;
-  label: string;
-  uploadFileName: string;
-}
-
-export const UiFileInputButton: React.FC<IProps> = (props) => {
+export const UiFileInputButton: React.FC<{label: string}> = (props) => {
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
@@ -44,9 +37,7 @@ export const UiFileInputButton: React.FC<IProps> = (props) => {
           {props.label}
         </button>
         <input
-          accept={props.acceptedFileTypes}
-          multiple={props.allowMultipleFiles}
-          name={props.uploadFileName}
+          multiple={true}
           onChange={onChangeHandler}
           ref={fileInputRef}
           style={{ display: 'none' }}
@@ -58,11 +49,6 @@ export const UiFileInputButton: React.FC<IProps> = (props) => {
   );
 };
 
-UiFileInputButton.defaultProps = {
-  acceptedFileTypes: '',
-  allowMultipleFiles: false,
-};
-
 export default function () {
   return <>
     <Head>
@@ -70,9 +56,6 @@ export default function () {
       <script src="https://cdnjs.com/libraries/pdf.js"></script>
       <script src="https://cdn.dwolla.com/1/dwolla.js"></script>
     </Head>
-    <UiFileInputButton
-      label="Upload Single File"
-      uploadFileName="theFiles"
-    />
+    <UiFileInputButton label="Upload PDF for convert to PNG" />
   </>
 };
