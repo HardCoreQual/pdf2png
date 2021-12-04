@@ -13,19 +13,19 @@ export const UiFileInputButton: React.FC<{label: string}> = (props) => {
     fileInputRef.current?.click();
   };
 
-  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files?.length) {
       return;
     }
 
-    Array.from(event.target.files).forEach(async (file) => {
+    for (let file of event.target.files) {
       for await(let png of pdf2png(URL.createObjectURL(file))) {
         setPngs((pngs) => [
           ...pngs,
           png,
         ]);
       }
-    });
+    }
 
     formRef.current?.reset();
   };
