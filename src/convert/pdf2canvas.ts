@@ -3,7 +3,7 @@ type ObjectURL = string;
 export async function* pdf2png(url: ObjectURL) {
   const PDFJS = (window as any).pdfjsLib;
 
-  const loadingTask = await PDFJS.getDocument({url});
+  const loadingTask = await PDFJS.getDocument({url}).promise;
 
   const pdfDocument = loadingTask;
   const numPages = pdfDocument.numPages;
@@ -25,7 +25,7 @@ export async function* pdf2png(url: ObjectURL) {
       canvasContext: (document.querySelector("#pdf-canvas") as any).getContext("2d"),
       viewport: viewport
     };
-    await page.render(render_context);
+    await page.render(render_context).promise;
 
     yield canvasNode.toDataURL('image/png');
   }

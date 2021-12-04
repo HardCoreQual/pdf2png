@@ -44,7 +44,7 @@ export const UiFileInputButton: React.FC<{label: string}> = (props) => {
           type="file"
         />
       </form>
-      {pngs.map(png => <img src={png} alt=""/>)}
+      {pngs.map((png, index) => <img src={png} key={index} alt="" />)}
     </>
   );
 };
