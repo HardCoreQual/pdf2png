@@ -1,9 +1,7 @@
-import axios from "axios";
 import React, {useState} from "react";
 import {strict as assert} from "assert";
 import Head from "next/head";
 import Canvas from "canvas";
-
 
 
 export class NodeCanvasFactory {
@@ -38,15 +36,13 @@ export class NodeCanvasFactory {
 
 
 type ObjectURL = string
-async function pdf2png(url: ObjectURL) {
+async function* pdf2png(url: ObjectURL) {
   const PDFJS = (window as any).pdfjsLib;
 
   const loadingTask = await PDFJS.getDocument({ url });
 
   const pdfDocument = loadingTask;
   const numPages = pdfDocument.numPages;
-
-  const result : string[] = [];
 
   for (let pageIndex = 1; pageIndex <= numPages; pageIndex++) {
     const page = await pdfDocument.getPage(pageIndex);
@@ -66,11 +62,8 @@ async function pdf2png(url: ObjectURL) {
 
     const renderTask = page.render(renderContext);
     await renderTask.promise;
-    const image = canvasAndContext.canvas.toDataURL('image/png');
-    result.push(image);
+    yield canvasAndContext.canvas.toDataURL('image/png');
   }
-
-  return result;
 }
 
 export interface IProps {
@@ -96,10 +89,13 @@ export const UiFileInputButton: React.FC<IProps> = (props) => {
     }
 
     Array.from(event.target.files).forEach(async (file) => {
-      const pngs = await pdf2png(URL.createObjectURL(file));
-      setPngs(pngs);
+      for await(let png of pdf2png(URL.createObjectURL(file))) {
+        setPngs((pngs) => [
+          ...pngs,
+          png,
+        ]);
+      }
     });
-
 
     formRef.current?.reset();
   };
