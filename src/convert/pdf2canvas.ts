@@ -1,6 +1,9 @@
 import {strict as assert} from "assert";
 import Canvas from "canvas";
 
+
+type CanvasAndContext =  { canvas: Canvas.Canvas | null, context: null };
+
 export class NodeCanvasFactory {
   create(width: number, height: number) {
     assert(width > 0 && height > 0, "Invalid canvas size");
@@ -12,14 +15,14 @@ export class NodeCanvasFactory {
     };
   }
 
-  reset(canvasAndContext, width, height) {
+  reset(canvasAndContext: CanvasAndContext, width: number, height: number) {
     assert(canvasAndContext.canvas, "Canvas is not specified");
     assert(width > 0 && height > 0, "Invalid canvas size");
     canvasAndContext.canvas.width = width;
     canvasAndContext.canvas.height = height;
   }
 
-  destroy(canvasAndContext) {
+  destroy(canvasAndContext: CanvasAndContext) {
     assert(canvasAndContext.canvas, "Canvas is not specified");
 
     // Zeroing the width and height cause Firefox to release graphics
