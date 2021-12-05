@@ -89,7 +89,7 @@ async function downloadZip(urls: string[], zipName: string, progress?: (e: numbe
       zip.file(index + '.png', content, {binary:true});
 
       doneCount++;
-      progress && progress(doneCount);
+      progress && progress(doneCount / urls.length);
     });
 
   await Promise.all(addedImages);
