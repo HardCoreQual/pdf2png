@@ -66,7 +66,7 @@ export default function () {
       <script src="https://cdnjs.com/libraries/pdf.js"></script>
       <script src="https://cdn.dwolla.com/1/dwolla.js"></script>
     </Head>
-    <UiFileInputButton label="Upload PDF for convert to PNG" />
+    <UiFileInputButton label="Upload PDF for convert to images" />
   </>
 };
 
