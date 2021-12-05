@@ -17,7 +17,7 @@ export async function* pdf2png(url: ObjectURL) {
   for (let pageIndex = 1; pageIndex <= numPages; pageIndex++) {
     const page = await pdfDocument.getPage(pageIndex);
 
-    const viewport = page.getViewport({scale: 1.0});
+    const viewport = page.getViewport({scale: 3.0});
 
     canvasNode.setAttribute('width', viewport.width);
     canvasNode.setAttribute('height', viewport.height);
