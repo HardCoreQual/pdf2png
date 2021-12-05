@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Head from "next/head";
-import {pdf2png} from "../convert/pdf2canvas";
+import {pdf2img} from "../convert/pdf2canvas";
 import JSZip from 'jszip';
 // @ts-ignore
 import JSZipUtils from 'jszip-utils';
@@ -10,7 +10,7 @@ export const UiFileInputButton: React.FC<{label: string}> = (props) => {
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const [pngs, setPngs] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
 
   const onClickHandler = () => {
     fileInputRef.current?.click();
@@ -22,10 +22,10 @@ export const UiFileInputButton: React.FC<{label: string}> = (props) => {
     }
 
     for (let file of event.target.files) {
-      for await(let png of pdf2png(URL.createObjectURL(file))) {
-        setPngs((pngs) => [
-          ...pngs,
-          png,
+      for await(let img of pdf2img(URL.createObjectURL(file))) {
+        setImages((images) => [
+          ...images,
+          img,
         ]);
       }
     }
@@ -39,7 +39,11 @@ export const UiFileInputButton: React.FC<{label: string}> = (props) => {
         <button type="button" onClick={onClickHandler}>
           {props.label}
         </button>
-        <button type="button" onClick={() => downloadZip(pngs, 'images', (e) => console.log(Math.round(e * 100)))}>
+        <button type="button" onClick={() => downloadZip(images.map((img, index) => ({
+          url: img,
+          format: 'webp',
+          name: index.toString()
+        })), 'images', (e) => console.log(Math.round(e * 100)))}>
           Download Rendered Images
         </button>
         <input
@@ -50,7 +54,7 @@ export const UiFileInputButton: React.FC<{label: string}> = (props) => {
           type="file"
         />
       </form>
-      {pngs.map((png, index) => <img src={png} key={index} alt="" />)}
+      {images.map((png, index) => <img src={png} key={index} alt="" />)}
     </>
   );
 };
@@ -67,7 +71,11 @@ export default function () {
 };
 
 
-async function downloadZip(urls: string[], zipName: string, progress?: (e: number) => void) {
+async function downloadZip(files: {
+  url: string,
+  name: string,
+  format: string,
+}[], zipName: string, progress?: (e: number) => void) {
   var zip = new JSZip();
   var zipFilename = zipName + ".zip";
 
@@ -83,13 +91,13 @@ async function downloadZip(urls: string[], zipName: string, progress?: (e: numbe
 
   let doneCount = 0;
 
-  const addedImages = urls
-    .map(async (url, index) => {
+  const addedImages = files
+    .map(async ({url, name, format}, index) => {
       const content = await getBinaryContent(url);
-      zip.file(index + '.png', content, {binary:true});
+      zip.file(name + '.' + format, content, {binary:true});
 
       doneCount++;
-      progress && progress(doneCount / urls.length);
+      progress && progress(doneCount / files.length);
     });
 
   await Promise.all(addedImages);

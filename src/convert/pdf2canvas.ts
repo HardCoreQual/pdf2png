@@ -1,6 +1,6 @@
 type ObjectURL = string;
 
-export async function* pdf2png(url: ObjectURL) {
+export async function* pdf2img(url: ObjectURL, format = 'image/webp') {
   const PDFJS = (window as any).pdfjsLib;
 
   const loadingTask = await PDFJS.getDocument({url}).promise;
@@ -17,7 +17,7 @@ export async function* pdf2png(url: ObjectURL) {
   for (let pageIndex = 1; pageIndex <= numPages; pageIndex++) {
     const page = await pdfDocument.getPage(pageIndex);
 
-    const viewport = page.getViewport({scale: 3.0});
+    const viewport = page.getViewport({scale: 2.0});
 
     canvasNode.setAttribute('width', viewport.width);
     canvasNode.setAttribute('height', viewport.height);
@@ -28,7 +28,7 @@ export async function* pdf2png(url: ObjectURL) {
     };
     await page.render(render_context).promise;
 
-    yield canvasNode.toDataURL('image/png');
+    yield canvasNode.toDataURL(format, 1);
   }
 
   canvasNode.remove();
